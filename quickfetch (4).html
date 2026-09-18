@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickFetch — Home services, booked in minutes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1EFE6; --bg-soft:#E9E5D6; --card:#FFFFFF; --text:#182129; --muted:#5B6672; --border:#DCD6C3;
+    --navy:#16232E; --navy-2:#1F3242; --brass:#B9792A; --brass-light:#D99A45; --brass-ink:#7A4F19;
+    --teal:#3F6B5B; --teal-bg:#E4EEE9; --red:#B0402F; --red-bg:#F6E4E0;
+    --shadow: 0 1px 2px rgba(22,35,46,.06), 0 8px 24px -12px rgba(22,35,46,.18);
+    --radius: 10px;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"], :root:not([data-theme="light"]) {}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12181E; --bg-soft:#1A222A; --card:#1B232C; --text:#EDEEE6; --muted:#9AA5AF; --border:#2B3641;
+      --navy:#0D151C; --navy-2:#182129; --teal-bg:#173028; --red-bg:#331E1B;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12181E; --bg-soft:#1A222A; --card:#1B232C; --text:#EDEEE6; --muted:#9AA5AF; --border:#2B3641;
+    --navy:#0D151C; --navy-2:#182129; --teal-bg:#173028; --red-bg:#331E1B;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5; min-height:100vh;
+  }
+  h1,h2,h3,.display{ font-family:'Archivo',system-ui,sans-serif; font-weight:900; letter-spacing:-0.01em; margin:0; }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  input,select,textarea{font-family:inherit; font-size:15px;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  .overflow-x{overflow-x:auto;}
+
+  /* Buttons */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 20px; border-radius:8px; border:1.5px solid transparent; font-weight:600; font-size:14.5px; transition:transform .12s ease, background .15s ease, border-color .15s ease; white-space:nowrap;}
+  .btn:active{transform:scale(.97);}
+  .btn-brass{background:var(--brass); color:#fff;}
+  .btn-brass:hover{background:var(--brass-light);}
+  .btn-navy{background:var(--navy); color:#fff;}
+  .btn-navy:hover{background:var(--navy-2);}
+  .btn-outline{background:transparent; border-color:var(--border); color:var(--text);}
+  .btn-outline:hover{border-color:var(--brass);}
+  .btn-ghost{background:transparent; color:var(--text);}
+  .btn-ghost:hover{background:var(--bg-soft);}
+  .btn-danger{background:transparent; border-color:var(--red); color:var(--red);}
+  .btn-danger:hover{background:var(--red-bg);}
+  .btn-sm{padding:7px 13px; font-size:13px; border-radius:7px;}
+  .btn-block{width:100%;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+
+  /* Nav */
+  .site-header{position:sticky; top:0; z-index:40; background:var(--navy); color:#fff; border-bottom:3px solid var(--brass);}
+  .site-header .wrap{display:flex; align-items:center; justify-content:space-between; height:68px; gap:20px;}
+  .logo{display:flex; align-items:center; gap:9px; font-family:'Archivo'; font-weight:900; font-size:21px; color:#fff;}
+  .logo .dot{width:9px; height:9px; border-radius:50%; background:var(--brass-light);}
+  .nav-links{display:flex; align-items:center; gap:26px; font-size:14.5px; font-weight:600; color:#C9D2DA;}
+  .nav-links a:hover{color:#fff;}
+  .nav-links a.active{color:#fff; box-shadow:inset 0 -2px 0 var(--brass-light); padding-bottom:4px;}
+  .nav-right{display:flex; align-items:center; gap:12px;}
+  .icon-btn{position:relative; width:38px; height:38px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#fff;}
+  .icon-btn:hover{background:rgba(255,255,255,.16);}
+  .badge-dot{position:absolute; top:-4px; right:-4px; background:var(--brass-light); color:var(--navy); font-size:10px; font-weight:800; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;}
+  .avatar{width:36px; height:36px; border-radius:50%; background:var(--brass); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;}
+  .hamburger{display:none;}
+  .mobile-menu{display:none;}
+
+  @media (max-width:860px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-menu.open{display:flex;}
+  }
+  @media (max-width:420px){
+    .wrap{padding:0 14px;}
+    .site-header .wrap{height:60px; gap:8px;}
+    .logo{font-size:17px;}
+    .nav-right{gap:7px;}
+    .icon-btn, .avatar{width:34px; height:34px;}
+    .hero{padding:44px 0 56px;}
+  }
+
+  /* Dropdown */
+  .dropdown{position:relative;}
+  .dropdown-panel{position:absolute; right:0; top:48px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); min-width:270px; z-index:50; overflow:hidden;}
+  .dropdown-panel .dh{padding:12px 16px; font-weight:700; font-size:13px; border-bottom:1px solid var(--border); color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  .notif-item{padding:12px 16px; border-bottom:1px solid var(--border); font-size:13.5px;}
+  .notif-item:last-child{border-bottom:none;}
+  .notif-item .t{font-weight:600; margin-bottom:2px;}
+  .notif-item .d{color:var(--muted); font-size:12px;}
+  .menu-item{display:block; padding:11px 16px; font-size:14px; font-weight:500;}
+  .menu-item:hover{background:var(--bg-soft);}
+
+  /* Hero */
+  .hero{background:var(--navy); color:#fff; padding:64px 0 84px; position:relative; overflow:hidden;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr;}}
+  .hero h1{color:#fff; font-size:clamp(2.1rem,4.4vw,3.4rem); line-height:1.05;}
+  .hero .accent{color:var(--brass-light);}
+  .hero p.lead{color:#C9D2DA; font-size:17.5px; max-width:480px; margin-top:18px;}
+  .hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
+  .trust-row{display:flex; gap:26px; margin-top:36px; flex-wrap:wrap;}
+  .trust-row .n{font-family:'Archivo'; font-weight:900; font-size:24px; color:#fff;}
+  .trust-row .l{font-size:12.5px; color:#9FACB8;}
+  .hero-visual{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .hv-card{background:var(--navy-2); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:16px; color:#fff;}
+  .hv-card svg{width:26px; height:26px; color:var(--brass-light); margin-bottom:10px;}
+  .hv-card .n{font-weight:700; font-size:14.5px;}
+  .hv-card .p{font-size:12.5px; color:#9FACB8; margin-top:2px;}
+  .hv-card.wide{grid-column:1/-1; display:flex; align-items:center; gap:14px;}
+
+  /* Sections */
+  section{padding:64px 0;}
+  .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:32px; flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(1.5rem,2.6vw,2.1rem);}
+  .section-head p{color:var(--muted); margin-top:6px; max-width:520px;}
+
+  .cat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:760px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:480px){.cat-grid{grid-template-columns:1fr;}}
+  .cat-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; transition:border-color .15s, transform .15s; box-shadow:var(--shadow);}
+  .cat-card:hover{border-color:var(--brass); transform:translateY(-2px);}
+  .cat-card .ic{width:42px; height:42px; border-radius:9px; background:var(--teal-bg); color:var(--teal); display:flex; align-items:center; justify-content:center; margin-bottom:14px;}
+  .cat-card .ic svg{width:22px; height:22px;}
+  .cat-card h3{font-size:17px; font-weight:700; font-family:'Inter';}
+  .cat-card p{color:var(--muted); font-size:13.5px; margin-top:5px;}
+  .cat-card .cnt{margin-top:12px; font-size:12.5px; color:var(--brass-ink); font-weight:700;}
+
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  @media (max-width:760px){.steps{grid-template-columns:1fr;}}
+  .step{position:relative; padding-left:0;}
+  .step .num{font-family:'Archivo'; font-weight:900; font-size:34px; color:var(--brass); line-height:1;}
+  .step h3{margin-top:10px; font-size:17px;}
+  .step p{color:var(--muted); font-size:14px; margin-top:6px;}
+
+  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);}
+  .service-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media (max-width:900px){.service-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:600px){.service-grid{grid-template-columns:1fr;}}
+  .svc-card{padding:20px; display:flex; flex-direction:column; gap:10px; height:100%;}
+  .svc-card .tag{align-self:flex-start; font-size:11.5px; font-weight:700; color:var(--teal); background:var(--teal-bg); padding:3px 9px; border-radius:20px;}
+  .svc-card h3{font-size:16.5px;}
+  .svc-card p.desc{color:var(--muted); font-size:13.5px; flex:1;}
+  .svc-card .meta{display:flex; align-items:center; justify-content:space-between; font-size:13px; padding-top:10px; border-top:1px solid var(--border); margin-top:4px;}
+  .svc-card .price{font-weight:800; font-family:'Archivo'; font-size:16px;}
+  .svc-card .price .u{font-family:'Inter'; font-weight:400; font-size:11.5px; color:var(--muted); margin-left:4px;}
+
+  .filter-bar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px;}
+  .chip{padding:8px 15px; border-radius:20px; border:1.5px solid var(--border); font-size:13.5px; font-weight:600; background:var(--card);}
+  .chip.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+
+  .stars{display:inline-flex; gap:2px; color:var(--brass);}
+  .stars svg{width:14px; height:14px;}
+  .rating-line{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted);}
+
+  .badge{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px;}
+  .badge-pending{background:#F3E9D2; color:#8A6512;}
+  .badge-confirmed{background:var(--teal-bg); color:var(--teal);}
+  .badge-in_progress{background:#DCE7F5; color:#2A5490;}
+  .badge-completed{background:#E4EEE9; color:#2F5645;}
+  .badge-cancelled{background:var(--red-bg); color:var(--red);}
+  :root[data-theme="dark"] .badge-pending{background:#3A2E11; color:#E3B95C;}
+
+  /* Forms */
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:13px; font-weight:700; margin-bottom:6px; color:var(--text);}
+  .field .hint{font-size:12px; color:var(--muted); margin-top:5px;}
+  .input, select.input, textarea.input{width:100%; padding:11px 13px; border-radius:8px; border:1.5px solid var(--border); background:var(--card); color:var(--text); outline:none; transition:border-color .12s; font-size:16px;}
+  .input:focus{border-color:var(--brass);}
+  textarea.input{resize:vertical; min-height:80px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:560px){.row2{grid-template-columns:1fr;}}
+
+  .auth-shell{max-width:440px; margin:0 auto; padding:56px 0;}
+  .auth-tabs{display:flex; gap:8px; margin-bottom:24px; background:var(--bg-soft); padding:4px; border-radius:9px;}
+  .auth-tab{flex:1; text-align:center; padding:9px; border-radius:7px; font-weight:700; font-size:13.5px; color:var(--muted);}
+  .auth-tab.active{background:var(--card); color:var(--text); box-shadow:var(--shadow);}
+  .role-pick{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .role-opt{border:1.5px solid var(--border); border-radius:9px; padding:13px; text-align:center; font-weight:700; font-size:13.5px; cursor:pointer;}
+  .role-opt.active{border-color:var(--brass); background:var(--teal-bg);}
+  .demo-hint{background:var(--bg-soft); border:1px dashed var(--border); border-radius:8px; padding:11px 13px; font-size:12.5px; color:var(--muted); margin-top:18px; line-height:1.6;}
+
+  /* Stepper (booking wizard) */
+  .stepper{display:flex; align-items:center; margin-bottom:36px; gap:0;}
+  .st-item{display:flex; align-items:center; gap:10px; flex:1;}
+  .st-circle{width:30px; height:30px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:var(--muted); flex-shrink:0; background:var(--card);}
+  .st-item.done .st-circle{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .st-item.current .st-circle{background:var(--brass); border-color:var(--brass); color:#fff;}
+  .st-label{font-size:12.5px; font-weight:700; color:var(--muted); white-space:nowrap;}
+  .st-item.current .st-label{color:var(--text);}
+  .st-line{flex:1; height:2px; background:var(--border); margin:0 8px;}
+  @media (max-width:640px){.st-label{display:none;}}
+
+  .provider-pick{border:1.5px solid var(--border); border-radius:10px; padding:14px; display:flex; gap:12px; align-items:center; margin-bottom:10px; cursor:pointer; background:var(--card);}
+  .provider-pick.selected{border-color:var(--brass); background:var(--teal-bg);}
+  .provider-pick .info{flex:1;}
+  .provider-pick .name{font-weight:700; font-size:14.5px;}
+  .provider-pick .loc{font-size:12.5px; color:var(--muted); margin-top:2px;}
+
+  .summary-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px;}
+  .summary-row:last-child{border-bottom:none;}
+  .summary-row .l{color:var(--muted);}
+  .summary-row.total{font-weight:800; font-size:16.5px; padding-top:14px;}
+
+  .card-preview{background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#fff; border-radius:12px; padding:22px; margin-bottom:18px;}
+  .card-preview .chip-ic{width:36px; height:26px; background:var(--brass-light); border-radius:5px; margin-bottom:20px;}
+  .card-preview .num{font-family:monospace; font-size:17px; letter-spacing:2px; margin-bottom:14px;}
+  .card-preview .bot{display:flex; justify-content:space-between; font-size:11.5px; color:#B8C2CB; text-transform:uppercase; letter-spacing:.04em;}
+
+  /* Dashboard */
+  .dash-shell{display:grid; grid-template-columns:230px 1fr; gap:28px; align-items:start;}
+  @media (max-width:820px){.dash-shell{grid-template-columns:1fr;}}
+  .dash-nav{display:flex; flex-direction:column; gap:3px; position:sticky; top:88px;}
+  .dash-nav a{padding:10px 14px; border-radius:8px; font-size:14px; font-weight:600; color:var(--muted);}
+  .dash-nav a.active{background:var(--navy); color:#fff;}
+  .dash-nav a:hover:not(.active){background:var(--bg-soft);}
+  @media (max-width:820px){.dash-nav{position:static; flex-direction:row; overflow-x:auto;}}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px;}
+  @media (max-width:820px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+  .stat-card{padding:18px;}
+  .stat-card .n{font-family:'Archivo'; font-weight:900; font-size:26px;}
+  .stat-card .l{font-size:12.5px; color:var(--muted); margin-top:4px;}
+
+  .booking-row{padding:18px; display:flex; gap:16px; align-items:flex-start; border-bottom:1px solid var(--border); flex-wrap:wrap;}
+  .booking-row:last-child{border-bottom:none;}
+  .booking-row .main{flex:1; min-width:200px;}
+  .booking-row h4{font-size:15px; margin-bottom:4px;}
+  .booking-row .meta-line{font-size:13px; color:var(--muted); display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;}
+  .booking-row .actions{display:flex; gap:8px; flex-wrap:wrap;}
+
+  table.data{width:100%; border-collapse:collapse; font-size:13.8px;}
+  table.data th{text-align:left; padding:10px 14px; background:var(--bg-soft); font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700;}
+  table.data td{padding:12px 14px; border-bottom:1px solid var(--border);}
+  table.data tr:last-child td{border-bottom:none;}
+
+  .tabs-row{display:flex; gap:6px; border-bottom:1px solid var(--border); margin-bottom:22px;}
+  .tab-btn{padding:10px 16px; font-weight:700; font-size:13.5px; color:var(--muted); border-bottom:2.5px solid transparent; margin-bottom:-1px;}
+  .tab-btn.active{color:var(--text); border-color:var(--brass);}
+
+  .empty-state{text-align:center; padding:50px 20px; color:var(--muted);}
+  .empty-state svg{width:38px; height:38px; margin-bottom:12px; color:var(--brass);}
+  .empty-state h4{color:var(--text); margin-bottom:6px; font-family:'Inter'; font-weight:700;}
+
+  .toast-root{position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:10px;}
+  .toast{background:var(--navy); color:#fff; padding:13px 18px; border-radius:9px; box-shadow:var(--shadow); font-size:13.5px; font-weight:600; border-left:4px solid var(--brass-light); max-width:320px; animation:slidein .2s ease;}
+  @keyframes slidein{from{transform:translateX(20px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+
+  .modal-backdrop{position:fixed; inset:0; background:rgba(13,21,28,.55); z-index:150; display:flex; align-items:center; justify-content:center; padding:20px;}
+  .modal-box{background:var(--card); border-radius:12px; max-width:420px; width:100%; padding:26px; box-shadow:var(--shadow);}
+
+  footer{background:var(--navy); color:#B8C2CB; padding:48px 0 28px; margin-top:40px;}
+  .foot-grid{display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:30px; padding-bottom:32px; border-bottom:1px solid rgba(255,255,255,.1);}
+  @media (max-width:700px){.foot-grid{grid-template-columns:1fr 1fr;}}
+  footer h5{color:#fff; font-size:13px; margin-bottom:14px; font-weight:700;}
+  footer a{display:block; font-size:13.5px; margin-bottom:9px; color:#9FACB8;}
+  footer a:hover{color:#fff;}
+  .foot-bottom{display:flex; justify-content:space-between; padding-top:22px; font-size:12.5px; flex-wrap:wrap; gap:10px;}
+  .foot-bottom button{color:#9FACB8; background:none; border:none; text-decoration:underline; font-size:12.5px;}
+
+  .center-py{padding:70px 0; text-align:center;}
+  .review-item{padding:16px 0; border-bottom:1px solid var(--border);}
+  .review-item:last-child{border-bottom:none;}
+  .review-item .top{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .review-item .who{font-weight:700; font-size:13.5px;}
+  .review-item .when{font-size:12px; color:var(--muted);}
+  .review-item p{font-size:13.8px; color:var(--text); margin-top:4px;}
+
+  .kbd-focus:focus-visible{outline:2.5px solid var(--brass); outline-offset:2px;}
+  *:focus-visible{outline:2.5px solid var(--brass); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-root" class="toast-root"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===================== ICONS ===================== */
+function ic(name, cls){
+  cls = cls || '';
+  const map = {
+    cleaning:'<path d="M14 3l6 6-2.3 2.3M14 3L4.5 12.5c-1.2 1.2-1.2 3.2 0 4.4l2.6 2.6c1.2 1.2 3.2 1.2 4.4 0L21 10M9.5 17.5L5 22"/>',
+    plumbing:'<path d="M8 3h4v4a3 3 0 003 3h1.5a2.5 2.5 0 012.5 2.5V15M8 7H4.5v4A3 3 0 008 14h1v7"/>',
+    beauty:'<path d="M12 2l1.7 5.3L19 9l-5.3 1.7L12 16l-1.7-5.3L5 9l5.3-1.7L12 2z"/><path d="M18.5 15l.6 1.8 1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6z"/>',
+    appliance:'<rect x="4.5" y="3" width="15" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><circle cx="9.5" cy="14.5" r="2"/><line x1="14.5" y1="13.3" x2="17" y2="13.3"/><line x1="14.5" y1="16" x2="17" y2="16"/>',
+    electrical:'<path d="M13 2L4.5 14h6l-1 8 9.5-12h-6l1-8z"/>',
+    handyman:'<path d="M15 6.5a4 4 0 01-5.4 5.4L4 17.5V21h3.5l5.6-5.6a4 4 0 015.4-5.4L16 12.5l-2-2L16.5 8z"/>',
+    star:'<path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.6L12 17.4l-5.9 3.1 1.2-6.6-4.8-4.6 6.6-.8z"/>',
+    bell:'<path d="M6 8a6 6 0 0112 0c0 4.5 1.5 6 2 6.5H4c.5-.5 2-2 2-6.5z"/><path d="M9.5 18.5a2.5 2.5 0 005 0"/>',
+    menu:'<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>',
+    close:'<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>',
+    check:'<path d="M4 12.5l5 5L20 6"/>',
+    chevron:'<path d="M9 5l7 7-7 7"/>',
+    calendar:'<rect x="4" y="5.5" width="16" height="15" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="8" y1="3.5" x2="8" y2="7.5"/><line x1="16" y1="3.5" x2="16" y2="7.5"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+    pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    wallet:'<rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17"/><circle cx="16.5" cy="14" r="1"/>',
+    empty:'<path d="M4 8l8-5 8 5v9a2 2 0 01-2 2H6a2 2 0 01-2-2V8z"/><path d="M9 21v-6h6v6"/>',
+    box:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+    logout:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    shield:'<path d="M12 2l8 3.5v6c0 5-3.4 8.7-8 10.5-4.6-1.8-8-5.5-8-10.5v-6L12 2z"/>',
+    search:'<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/>',
+    trash:'<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13a2 2 0 002 2h6a2 2 0 002-2l1-13"/>',
+    edit:'<path d="M4 20h4l11-11-4-4L4 16v4z"/>',
+    plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    truck:'<rect x="1.5" y="7" width="13" height="9" rx="1"/><path d="M14.5 10h3.5l3 3v3h-6.5z"/><circle cx="6" cy="18.5" r="1.7"/><circle cx="16.5" cy="18.5" r="1.7"/>',
+    dash:'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="10" rx="1"/><rect x="4" y="14" width="7" height="6" rx="1"/><rect x="13" y="17" width="7" height="3" rx="1"/>'
+  };
+  return '<svg class="'+cls+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(map[name]||'')+'</svg>';
+}
+function starIcon(filled){
+  return '<svg viewBox="0 0 24 24" '+(filled?'fill="currentColor" stroke="none"':'fill="none" stroke="currentColor" stroke-width="1.7"')+'>'+ic('star').match(/<path[^>]*\/>/)[0]+'</svg>';
+}
+function starsHtml(rating, size){
+  rating = rating || 0;
+  let h = '<span class="stars" style="'+(size?('font-size:'+size+'px'):'')+'">';
+  for(let i=1;i<=5;i++){ h += starIcon(i<=Math.round(rating)); }
+  h += '</span>';
+  return h;
+}
+
+/* ===================== DATA LAYER ===================== */
+const DB_KEY = 'quickfetch_db_v1';
+const SESSION_KEY = 'quickfetch_session_v1';
+
+function seedDB(){
+  const categories = [
+    {id:'cleaning', name:'Home Cleaning', blurb:'Standard & deep cleans for every room', icon:'cleaning'},
+    {id:'plumbing', name:'Plumbing', blurb:'Leaks, fittings & pipe repairs', icon:'plumbing'},
+    {id:'beauty', name:'Beauty & Wellness', blurb:'Facials, haircuts & at-home spa', icon:'beauty'},
+    {id:'appliance', name:'Appliance Repair', blurb:'AC, washing machines & more', icon:'appliance'},
+    {id:'electrical', name:'Electrical', blurb:'Wiring, switchboards & installs', icon:'electrical'},
+    {id:'handyman', name:'Handyman & Moving', blurb:'Assembly, mounting & local moves', icon:'handyman'}
+  ];
+
+  const services = [
+    {id:'s1', category:'cleaning', name:'Standard Home Cleaning', desc:'Dusting, mopping, kitchen & bathroom cleaning for regular upkeep.', price:799, unit:'per visit', duration:'2 hrs'},
+    {id:'s2', category:'cleaning', name:'Deep Cleaning', desc:'Thorough top-to-bottom clean including hard-to-reach areas and appliances.', price:1999, unit:'per visit', duration:'4–5 hrs'},
+    {id:'s3', category:'plumbing', name:'Tap & Pipe Repair', desc:'Fix leaking taps, pipes and minor blockages.', price:349, unit:'starting at', duration:'30–60 min'},
+    {id:'s4', category:'plumbing', name:'Bathroom Fitting Installation', desc:'Installation of taps, showers, wash basins and fittings.', price:899, unit:'starting at', duration:'1–2 hrs'},
+    {id:'s5', category:'beauty', name:'At-home Facial', desc:'Relaxing facial treatment using quality skincare products.', price:699, unit:'per session', duration:'45 min'},
+    {id:'s6', category:'beauty', name:'Haircut & Styling', desc:'Professional haircut and styling in the comfort of your home.', price:499, unit:'per session', duration:'40 min'},
+    {id:'s7', category:'appliance', name:'AC Service & Repair', desc:'General service, gas check and repair for split & window ACs.', price:549, unit:'starting at', duration:'45–60 min'},
+    {id:'s8', category:'appliance', name:'Washing Machine Repair', desc:'Diagnosis and repair for front-load and top-load machines.', price:449, unit:'starting at', duration:'45 min'},
+    {id:'s9', category:'electrical', name:'Wiring & Switchboard Repair', desc:'Fix faulty wiring, switches and MCB issues safely.', price:399, unit:'starting at', duration:'30–60 min'},
+    {id:'s10', category:'electrical', name:'Fan / Light Installation', desc:'Installation and mounting of ceiling fans and light fixtures.', price:299, unit:'starting at', duration:'30 min'},
+    {id:'s11', category:'handyman', name:'Furniture Assembly', desc:'Assembly of flat-pack furniture, shelves and wardrobes.', price:449, unit:'starting at', duration:'1 hr'},
+    {id:'s12', category:'handyman', name:'Local Moving Help', desc:'Loading, transport and unloading help for local moves.', price:1499, unit:'starting at', duration:'3+ hrs'}
+  ];
+
+  const providersRaw = [
+    {id:'p1', userId:'u3', name:'Meera Nair', category:'cleaning', area:'Indiranagar', bio:'8 years of professional home cleaning experience. Brings own eco-friendly supplies.', rate:'₹300/hr', online:true},
+    {id:'p2', userId:'u4', name:'Fathima Sheikh', category:'cleaning', area:'Koramangala', bio:'Detail-oriented cleaner specialising in move-in/move-out deep cleans.', rate:'₹320/hr', online:false},
+    {id:'p3', userId:'u5', name:'Arjun Rao', category:'plumbing', area:'HSR Layout', bio:'Licensed plumber, 10+ years fixing leaks, fittings and pipelines.', rate:'₹400/hr', online:true},
+    {id:'p4', userId:'u6', name:'Ravi Teja', category:'plumbing', area:'Whitefield', bio:'Fast response plumber for urgent leak and blockage jobs.', rate:'₹380/hr', online:true},
+    {id:'p5', userId:'u7', name:'Priya Kapoor', category:'beauty', area:'Jayanagar', bio:'Certified beautician offering facials, styling and at-home spa care.', rate:'₹500/session', online:true},
+    {id:'p6', userId:'u8', name:'Sanjay Iyer', category:'appliance', area:'Indiranagar', bio:'Appliance technician specialising in AC and washing machine repair.', rate:'₹350/hr', online:false},
+    {id:'p7', userId:'u9', name:'Divya Menon', category:'electrical', area:'Koramangala', bio:'Licensed electrician for home wiring, installs and safety checks.', rate:'₹380/hr', online:true},
+    {id:'p8', userId:'u10', name:'Karan Bhatt', category:'handyman', area:'Whitefield', bio:'Handyman for furniture assembly, mounting and local moving help.', rate:'₹320/hr', online:true}
+  ];
+  const providers = providersRaw.map(p=>Object.assign({rating:0, reviewCount:0, jobsDone:0, status:'active'}, p));
+
+  const users = [
+    {id:'u1', name:'Admin', email:'admin@demo.com', password:'demo123', role:'admin', status:'active'},
+    {id:'u2', name:'Rahul Verma', email:'customer@demo.com', password:'demo123', role:'customer', phone:'+91 98765 43210', status:'active'},
+    {id:'u11', name:'Ananya Iyer', email:'ananya@demo.com', password:'demo123', role:'customer', phone:'+91 98111 22334', status:'active'},
+    {id:'u3', name:'Meera Nair', email:'provider@demo.com', password:'demo123', role:'provider', providerId:'p1', phone:'+91 90000 00001', status:'active'},
+    {id:'u4', name:'Fathima Sheikh', email:'fathima@demo.com', password:'demo123', role:'provider', providerId:'p2', phone:'+91 90000 00002', status:'active'},
+    {id:'u5', name:'Arjun Rao', email:'arjun@demo.com', password:'demo123', role:'provider', providerId:'p3', phone:'+91 90000 00003', status:'active'},
+    {id:'u6', name:'Ravi Teja', email:'ravi@demo.com', password:'demo123', role:'provider', providerId:'p4', phone:'+91 90000 00004', status:'active'},
+    {id:'u7', name:'Priya Kapoor', email:'priya@demo.com', password:'demo123', role:'provider', providerId:'p5', phone:'+91 90000 00005', status:'active'},
+    {id:'u8', name:'Sanjay Iyer', email:'sanjay@demo.com', password:'demo123', role:'provider', providerId:'p6', phone:'+91 90000 00006', status:'active'},
+    {id:'u9', name:'Divya Menon', email:'divya@demo.com', password:'demo123', role:'provider', providerId:'p7', phone:'+91 90000 00007', status:'active'},
+    {id:'u10', name:'Karan Bhatt', email:'karan@demo.com', password:'demo123', role:'provider', providerId:'p8', phone:'+91 90000 00008', status:'active'}
+  ];
+
+  function daysFromNow(n){ const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+
+  const bookings = [
+    {id:'b1', customerId:'u2', providerId:'p1', serviceId:'s2', date:daysFromNow(-9), time:'10:00', address:'204, 12th Main, Indiranagar, Bengaluru', notes:'Please bring extra mop.', price:1999, status:'completed', paymentStatus:'paid', createdAt:daysFromNow(-12)},
+    {id:'b2', customerId:'u2', providerId:'p3', serviceId:'s3', date:daysFromNow(-4), time:'14:00', address:'204, 12th Main, Indiranagar, Bengaluru', notes:'Kitchen tap leaking.', price:349, status:'completed', paymentStatus:'paid', createdAt:daysFromNow(-5)},
+    {id:'b3', customerId:'u11', providerId:'p5', serviceId:'s5', date:daysFromNow(-2), time:'11:00', address:'88 7th Cross, Jayanagar, Bengaluru', notes:'', price:699, status:'completed', paymentStatus:'paid', createdAt:daysFromNow(-3)},
+    {id:'b4', customerId:'u2', providerId:'p6', serviceId:'s7', date:daysFromNow(2), time:'16:00', address:'204, 12th Main, Indiranagar, Bengaluru', notes:'AC in bedroom not cooling.', price:549, status:'confirmed', paymentStatus:'paid', createdAt:daysFromNow(-1)},
+    {id:'b5', customerId:'u11', providerId:'p7', serviceId:'s10', date:daysFromNow(1), time:'09:00', address:'55 80 Feet Rd, Koramangala, Bengaluru', notes:'Two ceiling fans to install.', price:299, status:'pending', paymentStatus:'paid', createdAt:daysFromNow(0)},
+    {id:'b6', customerId:'u2', providerId:'p8', serviceId:'s11', date:daysFromNow(0), time:'13:00', address:'204, 12th Main, Indiranagar, Bengaluru', notes:'Wardrobe assembly.', price:449, status:'in_progress', paymentStatus:'paid', createdAt:daysFromNow(-1)},
+    {id:'b7', customerId:'u11', providerId:'p2', serviceId:'s1', date:daysFromNow(-6), time:'10:00', address:'88 7th Cross, Jayanagar, Bengaluru', notes:'', price:799, status:'cancelled', paymentStatus:'refunded', createdAt:daysFromNow(-7)}
+  ];
+
+  const reviews = [
+    {id:'r1', bookingId:'b1', providerId:'p1', customerId:'u2', rating:5, comment:'Meera did an amazing deep clean, house looks brand new. Very punctual too.', date:daysFromNow(-8)},
+    {id:'r2', bookingId:'b2', providerId:'p3', customerId:'u2', rating:4, comment:'Fixed the leak quickly. Would have liked a bit more notice on arrival time.', date:daysFromNow(-3)},
+    {id:'r3', bookingId:'b3', providerId:'p5', customerId:'u11', rating:5, comment:'Lovely, relaxing facial. Priya was professional and used great products.', date:daysFromNow(-1)}
+  ];
+
+  const notifications = [
+    {id:'n1', userId:'u2', title:'Booking confirmed', body:'Your AC Service on '+bookings[3].date+' is confirmed.', date:daysFromNow(-1), read:false},
+    {id:'n2', userId:'u2', title:'Job in progress', body:'Karan Bhatt has started your Furniture Assembly.', date:daysFromNow(0), read:false},
+    {id:'n3', userId:'u3', title:'New review received', body:'Rahul Verma left you a 5-star review.', date:daysFromNow(-8), read:false},
+    {id:'n5', userId:'u7', title:'New booking request', body:'You have a new confirmed booking for At-home Facial.', date:daysFromNow(-3), read:true},
+    {id:'n4', userId:'u9', title:'New booking request', body:'Ananya Iyer requested Fan / Light Installation — please accept or decline.', date:daysFromNow(0), read:false}
+  ];
+
+  providers.forEach(p=>recomputeProviderRating(p, reviews));
+
+  return {categories, services, providers, users, bookings, reviews, notifications, seededAt:new Date().toISOString()};
+}
+
+function recomputeProviderRating(provider, reviewsArr){
+  const mine = reviewsArr.filter(r=>r.providerId===provider.id);
+  provider.reviewCount = mine.length;
+  provider.rating = mine.length ? (mine.reduce((a,r)=>a+r.rating,0)/mine.length) : 0;
+}
+
+let DB;
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ console.warn('QuickFetch: could not read local data', e); }
+  return null;
+}
+function persist(){
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
+  catch(e){ console.warn('QuickFetch: could not save local data', e); }
+}
+DB = loadDB() || seedDB();
+if(!DB) DB = seedDB();
+persist();
+
+function resetDemoData(){
+  DB = seedDB();
+  persist();
+  localStorage.removeItem(SESSION_KEY);
+  toast('Demo data reset.');
+  navigate('#/');
+}
+
+/* Session */
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem(SESSION_KEY)); }catch(e){ return null; }
+}
+function setSession(userId){ localStorage.setItem(SESSION_KEY, JSON.stringify({userId})); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+function currentUser(){
+  const s = getSession();
+  if(!s) return null;
+  return DB.users.find(u=>u.id===s.userId) || null;
+}
+function currentProvider(){
+  const u = currentUser();
+  if(!u || u.role!=='provider') return null;
+  return DB.providers.find(p=>p.id===u.providerId) || null;
+}
+
+/* Helpers */
+function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9); }
+function fmtMoney(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+}
+function fmtDateShort(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+}
+function fmtTime(t){
+  const [h,m] = t.split(':').map(Number);
+  const ap = h>=12 ? 'PM':'AM';
+  const hh = ((h+11)%12)+1;
+  return hh+':'+String(m).padStart(2,'0')+' '+ap;
+}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function catById(id){ return DB.categories.find(c=>c.id===id); }
+function svcById(id){ return DB.services.find(s=>s.id===id); }
+function provById(id){ return DB.providers.find(p=>p.id===id); }
+function userById(id){ return DB.users.find(u=>u.id===id); }
+function statusLabel(s){
+  return {pending:'Awaiting confirmation', confirmed:'Confirmed', in_progress:'In progress', completed:'Completed', cancelled:'Cancelled'}[s] || s;
+}
+function esc(str){
+  return String(str==null?'':str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function initials(name){
+  return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+}
+function addNotification(userId, title, body){
+  DB.notifications.unshift({id:uid('n'), userId, title, body, date:todayISO(), read:false});
+  persist();
+}
+
+function toast(msg){
+  const root = document.getElementById('toast-root');
+  const t = document.createElement('div');
+  t.className='toast';
+  t.textContent = msg;
+  root.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 3200);
+}
+
+/* ===================== ROUTER ===================== */
+let bookingDraft = {};
+let liveDraft = {};
+let activeTimers = [];
+let notifOpen = false, menuOpen = false, mobileNavOpen = false;
+
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
+function setTrackedInterval(fn, ms){ const id = setInterval(fn, ms); activeTimers.push(id); return id; }
+function setTrackedTimeout(fn, ms){ const id = setTimeout(fn, ms); activeTimers.push(id); return id; }
+function clearAllTimers(){ activeTimers.forEach(id=>{ clearInterval(id); clearTimeout(id); }); activeTimers = []; }
+
+function navigate(hash){
+  if(location.hash === hash){ render(); }
+  else { location.hash = hash; }
+  window.scrollTo({top:0, behavior:'instant'});
+}
+window.addEventListener('hashchange', render);
+window.addEventListener('DOMContentLoaded', ()=>{ if(!location.hash) location.hash = '#/'; render(); });
+
+function parseHash(){
+  const h = location.hash.replace(/^#/,'') || '/';
+  const [path, qs] = h.split('?');
+  const parts = path.split('/').filter(Boolean);
+  const query = {};
+  if(qs) qs.split('&').forEach(kv=>{ const [k,v]=kv.split('='); query[decodeURIComponent(k)] = decodeURIComponent(v||''); });
+  return {parts, query};
+}
+
+function requireAuth(role){
+  const u = currentUser();
+  if(!u){ toast('Please log in to continue.'); navigate('#/login?next='+encodeURIComponent(location.hash.slice(1))); return null; }
+  if(role && u.role!==role){ toast('This page is not available for your account type.'); navigate('#/'); return null; }
+  return u;
+}
+
+function render(){
+  clearAllTimers();
+  const {parts, query} = parseHash();
+  notifOpen = false; menuOpen = false;
+  let content = '';
+  const r0 = parts[0];
+
+  if(!r0){ content = viewHome(); }
+  else if(r0==='services'){ content = viewServices(query); }
+  else if(r0==='service'){ content = viewServiceDetail(parts[1]); }
+  else if(r0==='book'){ content = viewBooking(parts[1], query); }
+  else if(r0==='live'){ content = viewLive(parts[1], query); }
+  else if(r0==='login'){ content = viewLogin(query); }
+  else if(r0==='register'){ content = viewRegister(query); }
+  else if(r0==='dashboard' && parts[1]==='customer'){ const u=requireAuth('customer'); content = u? viewCustomerDashboard(query) : ''; }
+  else if(r0==='dashboard' && parts[1]==='provider'){ const u=requireAuth('provider'); content = u? viewProviderDashboard(query) : ''; }
+  else if(r0==='admin'){ const u=requireAuth('admin'); content = u? viewAdmin(query) : ''; }
+  else if(r0==='provider'){ content = viewProviderProfile(parts[1]); }
+  else { content = viewNotFound(); }
+
+  document.getElementById('app').innerHTML = layout(content);
+  bindGlobal();
+}
+
+/* ===================== LAYOUT ===================== */
+function layout(content){
+  const u = currentUser();
+  return `
+    ${header(u)}
+    <main>${content}</main>
+    ${footer()}
+  `;
+}
+
+function header(u){
+  const path = location.hash.replace(/^#/,'') || '/';
+  const isActive = p => path.indexOf(p)===0 ? 'active' : '';
+  const myNotifs = u ? DB.notifications.filter(n=>n.userId===u.id) : [];
+  const unread = myNotifs.filter(n=>!n.read).length;
+
+  let rightAuth = '';
+  if(!u){
+    rightAuth = `
+      <a href="#/login" class="btn btn-ghost btn-sm" style="color:#fff;">Log in</a>
+      <a href="#/register" class="btn btn-brass btn-sm">Sign up</a>
+    `;
+  } else {
+    const dashHref = u.role==='admin' ? '#/admin' : (u.role==='provider' ? '#/dashboard/provider' : '#/dashboard/customer');
+    rightAuth = `
+      <div class="dropdown">
+        <button class="icon-btn" data-toggle="notif" aria-label="Notifications">
+          ${ic('bell')}
+          ${unread ? '<span class="badge-dot">'+unread+'</span>' : ''}
+        </button>
+        <div class="dropdown-panel" data-panel="notif" style="display:none;">
+          <div class="dh">Notifications</div>
+          ${myNotifs.length ? myNotifs.slice(0,6).map(n=>`
+            <div class="notif-item">
+              <div class="t">${esc(n.title)}</div>
+              <div>${esc(n.body)}</div>
+              <div class="d">${fmtDateShort(n.date)}</div>
+            </div>`).join('') : '<div class="notif-item">No notifications yet.</div>'}
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="avatar" data-toggle="menu" aria-label="Account menu">${initials(u.name)}</button>
+        <div class="dropdown-panel" data-panel="menu" style="display:none;">
+          <div class="dh">${esc(u.name)}</div>
+          <a class="menu-item" href="${dashHref}">${ic('dash',) } &nbsp;Dashboard</a>
+          <a class="menu-item" href="#" data-action="logout">${ic('logout')} &nbsp;Log out</a>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+  <header class="site-header">
+    <div class="wrap">
+      <a href="#/" class="logo"><span class="dot"></span> QuickFetch</a>
+      <nav class="nav-links">
+        <a href="#/services" class="${isActive('services')}">Services</a>
+        <a href="#/#how" onclick="location.hash='#/'; setTimeout(()=>document.getElementById('how-it-works')?.scrollIntoView({behavior:'smooth'}),50); return false;">How it works</a>
+        <a href="#/register?role=provider">For providers</a>
+      </nav>
+      <div class="nav-right">
+        ${rightAuth}
+        <button class="icon-btn hamburger" data-toggle="mobilenav" aria-label="Menu">${ic('menu')}</button>
+      </div>
+    </div>
+    <div class="mobile-menu wrap" data-mobile-nav style="display:none; flex-direction:column; gap:2px; padding-bottom:16px;">
+      <a class="menu-item" style="color:#fff;" href="#/services">Services</a>
+      <a class="menu-item" style="color:#fff;" href="#/register?role=provider">For providers</a>
+      ${!u ? '<a class="menu-item" style="color:#fff;" href="#/login">Log in</a><a class="menu-item" style="color:#fff;" href="#/register">Sign up</a>' : ''}
+    </div>
+  </header>`;
+}
+
+function footer(){
+  return `
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="logo" style="color:#fff; margin-bottom:12px;"><span class="dot"></span>QuickFetch</div>
+          <p style="font-size:13.5px; max-width:320px; color:#9FACB8;">Home and personal services, booked in minutes. Vetted local professionals for cleaning, repairs, beauty and more.</p>
+        </div>
+        <div>
+          <h5>Company</h5>
+          <a href="#/services">Browse services</a>
+          <a href="#/register?role=provider">Become a provider</a>
+          <a href="#/">How it works</a>
+        </div>
+        <div>
+          <h5>Support</h5>
+          <a href="#/" onclick="toast('Demo only — help centre is not wired up.'); return false;">Help centre</a>
+          <a href="#/" onclick="toast('Demo only — this is a prototype.'); return false;">Trust &amp; safety</a>
+          <a href="#/" onclick="toast('Demo only — this is a prototype.'); return false;">Contact us</a>
+        </div>
+        <div>
+          <h5>Account</h5>
+          <a href="#/login">Log in</a>
+          <a href="#/register">Sign up</a>
+          <a href="#/admin">Admin panel</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 QuickFetch. Prototype build for demonstration purposes.</span>
+        <button data-action="reset-demo">Reset demo data</button>
+      </div>
+    </div>
+  </footer>`;
+}
+
+/* ===================== GLOBAL BINDINGS ===================== */
+function bindGlobal(){
+  document.querySelectorAll('[data-toggle="notif"]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    togglePanel('notif');
+  }));
+  document.querySelectorAll('[data-toggle="menu"]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    togglePanel('menu');
+  }));
+  document.querySelectorAll('[data-toggle="mobilenav"]').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    const mn = document.querySelector('[data-mobile-nav]');
+    if(mn) mn.style.display = mn.style.display==='none' ? 'flex' : 'none';
+  }));
+  document.querySelectorAll('[data-action="logout"]').forEach(b=>b.addEventListener('click', e=>{
+    e.preventDefault(); clearSession(); toast('Logged out.'); navigate('#/');
+  }));
+  document.querySelectorAll('[data-action="reset-demo"]').forEach(b=>b.addEventListener('click', resetDemoData));
+  document.addEventListener('click', closeAllPanels, {once:true});
+
+  bindViewHandlers();
+}
+function togglePanel(name){
+  document.querySelectorAll('.dropdown-panel').forEach(p=>{
+    if(p.getAttribute('data-panel')===name){ p.style.display = p.style.display==='none' ? 'block':'none'; }
+    else p.style.display='none';
+  });
+}
+function closeAllPanels(){
+  document.querySelectorAll('.dropdown-panel').forEach(p=>p.style.display='none');
+  document.addEventListener('click', closeAllPanels, {once:true});
+}
+let bindViewHandlers = function(){};
+
+/* ===================== VIEW: HOME ===================== */
+function viewHome(){
+  const cats = DB.categories;
+  const featured = DB.services.slice(0,6);
+  bindViewHandlers = ()=>{};
+  return `
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Real help, <span class="accent">right where you are</span> — in real time.</h1>
+        <p class="lead">QuickFetch connects service seekers and service providers the moment a need comes up. Share your location, get matched with a nearby verified pro, and track them arriving live — or schedule ahead if you'd rather plan.</p>
+        <div class="hero-actions">
+          <a href="#/services" class="btn btn-brass">Request a service now</a>
+          <a href="#/register?role=provider" class="btn btn-outline" style="border-color:rgba(255,255,255,.3); color:#fff;">Become a provider</a>
+        </div>
+        <div class="trust-row">
+          <div><div class="n">${DB.providers.filter(p=>p.online).length}</div><div class="l">Pros online right now</div></div>
+          <div><div class="n">${DB.services.length}</div><div class="l">Services on offer</div></div>
+          <div><div class="n">${DB.bookings.filter(b=>b.status==='completed').length}+</div><div class="l">Jobs completed</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        ${cats.slice(0,4).map(c=>`
+          <div class="hv-card">
+            ${ic(c.icon)}
+            <div class="n">${esc(c.name)}</div>
+            <div class="p">${esc(c.blurb)}</div>
+          </div>
+        `).join('')}
+        <div class="hv-card wide">
+          ${ic('shield')}
+          <div><div class="n">Verified &amp; rated professionals</div><div class="p">Every provider is reviewed after each job</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>What do you need done?</h2>
+        <p>Six categories, one simple booking flow.</p>
+      </div>
+      <a href="#/services" class="btn btn-outline btn-sm">View all services</a>
+    </div>
+    <div class="cat-grid">
+      ${cats.map(c=>`
+        <a href="#/services?cat=${c.id}" class="cat-card">
+          <div class="ic">${ic(c.icon)}</div>
+          <h3>${esc(c.name)}</h3>
+          <p>${esc(c.blurb)}</p>
+          <div class="cnt">${DB.services.filter(s=>s.category===c.id).length} services available →</div>
+        </a>
+      `).join('')}
+    </div>
+  </section>
+
+  <section class="wrap" id="how-it-works">
+    <div class="section-head">
+      <div><h2>How QuickFetch works</h2><p>From search to a job well done, in three steps.</p></div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Pick a service &amp; time</h3><p>Browse categories, choose a provider, and book a date and time that works for you.</p></div>
+      <div class="step"><div class="num">2</div><h3>Pay securely online</h3><p>Confirm your address and pay upfront through our secure checkout — no cash needed.</p></div>
+      <div class="step"><div class="num">3</div><h3>Get it done &amp; rate it</h3><p>Track your booking status, get it completed, then rate and review your provider.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head">
+      <div><h2>Popular right now</h2><p>A few services customers are booking most this week.</p></div>
+    </div>
+    <div class="service-grid">
+      ${featured.map(svcCard).join('')}
+    </div>
+  </section>
+  `;
+}
+
+function svcCard(s){
+  const c = catById(s.category);
+  return `
+    <a href="#/service/${s.id}" class="card svc-card">
+      <span class="tag">${esc(c.name)}</span>
+      <h3>${esc(s.name)}</h3>
+      <p class="desc">${esc(s.desc)}</p>
+      <div class="meta">
+        <span style="color:var(--muted);">${esc(s.duration)}</span>
+        <span class="price">${fmtMoney(s.price)}<span class="u"> ${esc(s.unit)}</span></span>
+      </div>
+    </a>
+  `;
+}
+
+/* ===================== VIEW: SERVICES CATALOG ===================== */
+function viewServices(query){
+  const activeCat = query.cat || 'all';
+  const q = (query.q||'').toLowerCase();
+  let list = DB.services;
+  if(activeCat!=='all') list = list.filter(s=>s.category===activeCat);
+  if(q) list = list.filter(s=> s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
+
+  bindViewHandlers = ()=>{
+    const input = document.getElementById('svc-search');
+    if(input) input.addEventListener('input', ()=>{
+      const val = input.value;
+      const parts = ['services'];
+      navigateReplace('#/services'+(activeCat!=='all'?('?cat='+activeCat+(val?('&q='+encodeURIComponent(val)):'')):(val?('?q='+encodeURIComponent(val)):'')));
+    });
+  };
+
+  return `
+  <section class="wrap" style="padding-top:40px;">
+    <div class="section-head">
+      <div><h2>All services</h2><p>Find a professional for whatever needs doing around the house.</p></div>
+      <div style="position:relative; min-width:240px;">
+        <input id="svc-search" class="input" placeholder="Search services…" value="${esc(query.q||'')}" style="padding-left:38px;">
+        <span style="position:absolute; left:11px; top:11px; color:var(--muted);">${ic('search','')}</span>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <a href="#/services${q?('?q='+encodeURIComponent(q)):''}" class="chip ${activeCat==='all'?'active':''}">All</a>
+      ${DB.categories.map(c=>`<a href="#/services?cat=${c.id}${q?('&q='+encodeURIComponent(q)):''}" class="chip ${activeCat===c.id?'active':''}">${esc(c.name)}</a>`).join('')}
+    </div>
+    ${list.length ? `<div class="service-grid">${list.map(svcCard).join('')}</div>` : emptyState('empty','No services found', 'Try a different category or search term.')}
+  </section>`;
+}
+function navigateReplace(hash){ history.replaceState(null,'',hash); render(); }
+
+function emptyState(icon, title, body){
+  return `<div class="empty-state">${ic(icon)}<h4>${esc(title)}</h4><p>${esc(body)}</p></div>`;
+}
+
+/* ===================== VIEW: SERVICE DETAIL ===================== */
+function viewServiceDetail(id){
+  const s = svcById(id);
+  if(!s) return viewNotFound();
+  const c = catById(s.category);
+  const provs = DB.providers.filter(p=>p.category===s.category && p.status==='active');
+
+  bindViewHandlers = ()=>{};
+
+  return `
+  <section class="wrap" style="padding-top:40px;">
+    <a href="#/services?cat=${c.id}" class="btn btn-ghost btn-sm" style="padding-left:0; margin-bottom:18px;">← Back to ${esc(c.name)}</a>
+    <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:32px; align-items:start;" class="detail-grid">
+      <div>
+        <span class="tag" style="display:inline-block; margin-bottom:10px;">${esc(c.name)}</span>
+        <h1 style="font-size:clamp(1.6rem,3vw,2.2rem);">${esc(s.name)}</h1>
+        <p style="color:var(--muted); margin-top:12px; font-size:15.5px; max-width:600px;">${esc(s.desc)}</p>
+        <div style="display:flex; gap:22px; margin-top:20px; flex-wrap:wrap;">
+          <div class="rating-line">${ic('clock')} ${esc(s.duration)}</div>
+        </div>
+
+        <h3 style="margin-top:38px; margin-bottom:14px; font-size:17px;">Available professionals</h3>
+        <div>
+          ${provs.map(p=>`
+            <a href="#/provider/${p.id}" class="card" style="display:flex; gap:14px; padding:16px; margin-bottom:12px; align-items:center;">
+              <div class="avatar" style="background:var(--teal);">${initials(p.name)}</div>
+              <div style="flex:1;">
+                <div style="font-weight:700; font-size:14.5px;">${esc(p.name)}</div>
+                <div class="rating-line">${starsHtml(p.rating,12)} <span>${p.rating? p.rating.toFixed(1):'New'} ${p.reviewCount?('('+p.reviewCount+' reviews)'):''}</span></div>
+                <div style="font-size:12.5px; color:var(--muted); margin-top:2px;">${ic('pin')} ${esc(p.area)}</div>
+              </div>
+              <span style="font-size:13px; font-weight:700; color:var(--brass-ink);">${esc(p.rate)}</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px; position:sticky; top:88px;">
+        <div class="price" style="font-family:'Archivo'; font-weight:900; font-size:28px;">${fmtMoney(s.price)}</div>
+        <div style="color:var(--muted); font-size:13px; margin-bottom:18px;">${esc(s.unit)} · ${esc(s.duration)}</div>
+        <a href="#/book/${s.id}" class="btn btn-brass btn-block">Book this service</a>
+        <div class="demo-hint" style="margin-top:16px;">Secure checkout via card. This is a demo — no real payment is processed.</div>
+      </div>
+    </div>
+  </section>
+  <style>@media(max-width:820px){.detail-grid{grid-template-columns:1fr !important;}}</style>
+  `;
+}
+
+/* ===================== VIEW: PROVIDER PROFILE ===================== */
+function viewProviderProfile(id){
+  const p = provById(id);
+  if(!p) return viewNotFound();
+  const c = catById(p.category);
+  const revs = DB.reviews.filter(r=>r.providerId===p.id).sort((a,b)=> b.date.localeCompare(a.date));
+  const services = DB.services.filter(s=>s.category===p.category);
+  bindViewHandlers = ()=>{};
+  return `
+  <section class="wrap" style="padding-top:40px; max-width:900px;">
+    <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
+      <div class="avatar" style="width:64px; height:64px; font-size:20px; background:var(--teal);">${initials(p.name)}</div>
+      <div>
+        <h1 style="font-size:24px;">${esc(p.name)}</h1>
+        <div class="rating-line" style="margin-top:4px;">${starsHtml(p.rating,14)} <span>${p.rating?p.rating.toFixed(1):'New'} ${p.reviewCount?('· '+p.reviewCount+' reviews'):''} · ${ic('pin')} ${esc(p.area)}</span></div>
+      </div>
+    </div>
+    <p style="color:var(--muted); margin-top:18px; max-width:600px;">${esc(p.bio)}</p>
+    <div style="margin-top:10px; font-weight:700; color:var(--brass-ink);">${esc(c.name)} specialist · ${esc(p.rate)}</div>
+
+    <h3 style="margin-top:34px; margin-bottom:14px; font-size:16.5px;">Services offered</h3>
+    <div class="service-grid">${services.map(svcCard).join('')}</div>
+
+    <h3 style="margin-top:34px; margin-bottom:14px; font-size:16.5px;">Customer reviews</h3>
+    <div class="card" style="padding:6px 20px;">
+      ${revs.length ? revs.map(r=>`
+        <div class="review-item">
+          <div class="top"><span class="who">${esc(userById(r.customerId)?.name||'Customer')}</span><span class="when">${fmtDate(r.date)}</span></div>
+          ${starsHtml(r.rating,12)}
+          <p>${esc(r.comment)}</p>
+        </div>
+      `).join('') : '<div style="padding:20px 0; color:var(--muted);">No reviews yet.</div>'}
+    </div>
+  </section>`;
+}
+
+/* ===================== VIEW: LOGIN / REGISTER ===================== */
+function viewLogin(query){
+  const next = query.next ? decodeURIComponent(query.next) : null;
+  bindViewHandlers = ()=>{
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      const email = document.getElementById('li-email').value.trim().toLowerCase();
+      const pass = document.getElementById('li-pass').value;
+      const user = DB.users.find(u=>u.email.toLowerCase()===email && u.password===pass);
+      const errEl = document.getElementById('li-error');
+      if(!user){ errEl.textContent = 'Incorrect email or password.'; errEl.style.display='block'; return; }
+      if(user.status==='suspended'){ errEl.textContent = 'This account has been suspended. Contact support.'; errEl.style.display='block'; return; }
+      setSession(user.id);
+      toast('Welcome back, '+user.name.split(' ')[0]+'.');
+      if(next){ navigate('#/'+next); }
+      else if(user.role==='admin') navigate('#/admin');
+      else if(user.role==='provider') navigate('#/dashboard/provider');
+      else navigate('#/dashboard/customer');
+    });
+    document.querySelectorAll('[data-fill]').forEach(b=>b.addEventListener('click', ()=>{
+      document.getElementById('li-email').value = b.getAttribute('data-fill');
+      document.getElementById('li-pass').value = 'demo123';
+    }));
+  };
+  return `
+  <section class="wrap auth-shell">
+    <div class="card" style="padding:30px;">
+      <h2 style="font-size:22px; margin-bottom:6px;">Log in to QuickFetch</h2>
+      <p style="color:var(--muted); font-size:13.5px; margin-bottom:22px;">New here? <a href="#/register" style="color:var(--brass-ink); font-weight:700;">Create an account</a></p>
+      <form id="login-form">
+        <div id="li-error" style="display:none; background:var(--red-bg); color:var(--red); padding:10px 13px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+        <div class="field"><label for="li-email">Email</label><input class="input" id="li-email" type="email" required placeholder="you@example.com"></div>
+        <div class="field"><label for="li-pass">Password</label><input class="input" id="li-pass" type="password" required placeholder="••••••••"></div>
+        <button class="btn btn-brass btn-block" type="submit">Log in</button>
+      </form>
+      <div class="demo-hint">
+        <strong>Demo accounts</strong> (password: demo123) — click to fill:<br>
+        <a href="#" data-fill="customer@demo.com" style="color:var(--brass-ink); font-weight:600;">Customer — customer@demo.com</a><br>
+        <a href="#" data-fill="provider@demo.com" style="color:var(--brass-ink); font-weight:600;">Provider — provider@demo.com</a><br>
+        <a href="#" data-fill="admin@demo.com" style="color:var(--brass-ink); font-weight:600;">Admin — admin@demo.com</a>
+      </div>
+    </div>
+  </section>`;
+}
+
+function viewRegister(query){
+  let role = query.role==='provider' ? 'provider' : 'customer';
+  bindViewHandlers = ()=>{
+    document.querySelectorAll('[data-role-opt]').forEach(b=>b.addEventListener('click', ()=>{
+      role = b.getAttribute('data-role-opt');
+      document.querySelectorAll('[data-role-opt]').forEach(x=>x.classList.toggle('active', x===b));
+      document.getElementById('provider-fields').style.display = role==='provider' ? 'block':'none';
+    }));
+    document.getElementById('reg-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = document.getElementById('rg-name').value.trim();
+      const email = document.getElementById('rg-email').value.trim().toLowerCase();
+      const phone = document.getElementById('rg-phone').value.trim();
+      const pass = document.getElementById('rg-pass').value;
+      const errEl = document.getElementById('rg-error');
+      if(DB.users.some(u=>u.email.toLowerCase()===email)){ errEl.textContent='An account with this email already exists.'; errEl.style.display='block'; return; }
+      const id = uid('u');
+      const newUser = {id, name, email, password:pass, phone, role, status:'active'};
+      if(role==='provider'){
+        const cat = document.getElementById('rg-cat').value;
+        const area = document.getElementById('rg-area').value.trim() || 'Bengaluru';
+        const bio = document.getElementById('rg-bio').value.trim() || 'New QuickFetch professional.';
+        const pid = uid('p');
+        DB.providers.push({id:pid, userId:id, name, category:cat, area, bio, rate:'₹350/hr', rating:0, reviewCount:0, jobsDone:0, status:'active'});
+        newUser.providerId = pid;
+      }
+      DB.users.push(newUser);
+      persist();
+      setSession(id);
+      toast('Account created. Welcome to QuickFetch, '+name.split(' ')[0]+'!');
+      navigate(role==='provider' ? '#/dashboard/provider' : '#/dashboard/customer');
+    });
+  };
+  return `
+  <section class="wrap auth-shell">
+    <div class="card" style="padding:30px;">
+      <h2 style="font-size:22px; margin-bottom:6px;">Create your account</h2>
+      <p style="color:var(--muted); font-size:13.5px; margin-bottom:22px;">Already registered? <a href="#/login" style="color:var(--brass-ink); font-weight:700;">Log in</a></p>
+      <div class="role-pick">
+        <div class="role-opt ${role==='customer'?'active':''}" data-role-opt="customer">I need a service</div>
+        <div class="role-opt ${role==='provider'?'active':''}" data-role-opt="provider">I provide a service</div>
+      </div>
+      <form id="reg-form">
+        <div id="rg-error" style="display:none; background:var(--red-bg); color:var(--red); padding:10px 13px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+        <div class="field"><label for="rg-name">Full name</label><input class="input" id="rg-name" required placeholder="Jane Doe"></div>
+        <div class="row2">
+          <div class="field"><label for="rg-email">Email</label><input class="input" id="rg-email" type="email" required placeholder="you@example.com"></div>
+          <div class="field"><label for="rg-phone">Phone</label><input class="input" id="rg-phone" required placeholder="+91 90000 00000"></div>
+        </div>
+        <div class="field"><label for="rg-pass">Password</label><input class="input" id="rg-pass" type="password" required minlength="4" placeholder="At least 4 characters"></div>
+        <div id="provider-fields" style="display:${role==='provider'?'block':'none'};">
+          <div class="field"><label for="rg-cat">Primary service category</label>
+            <select class="input" id="rg-cat">${DB.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label for="rg-area">Service area</label><input class="input" id="rg-area" placeholder="e.g. Indiranagar, Bengaluru"></div>
+          <div class="field"><label for="rg-bio">Short bio</label><textarea class="input" id="rg-bio" placeholder="Tell customers about your experience"></textarea></div>
+        </div>
+        <button class="btn btn-brass btn-block" type="submit">Create account</button>
+      </form>
+    </div>
+  </section>`;
+}
+
+/* ===================== VIEW: BOOKING WIZARD ===================== */
+function viewBooking(serviceId, query){
+  const u = requireAuth();
+  if(!u) return '';
+  if(u.role!=='customer'){ toast('Only customer accounts can book services.'); navigate('#/'); return ''; }
+  const s = svcById(serviceId);
+  if(!s) return viewNotFound();
+  const step = Math.min(4, Math.max(1, parseInt(query.step||'1',10)));
+  if(!bookingDraft.serviceId || bookingDraft.serviceId!==serviceId){
+    bookingDraft = {serviceId, providerId:query.providerId||'', date:'', time:'', address:'', notes:''};
+  }
+  const provs = DB.providers.filter(p=>p.category===s.category && p.status==='active');
+
+  const steps = ['Provider','Date & time','Location','Review & pay'];
+  const stepperHtml = `<div class="stepper">${steps.map((label,i)=>{
+    const n=i+1; const cls = n<step?'done':(n===step?'current':'');
+    return `<div class="st-item ${cls}"><div class="st-circle">${n<step?ic('check'):n}</div><span class="st-label">${label}</span></div>${i<steps.length-1?'<div class="st-line"></div>':''}`;
+  }).join('')}</div>`;
+
+  let body = '';
+  if(step===1){
+    body = `
+      <h3 style="margin-bottom:16px; font-size:17px;">Choose a professional</h3>
+      <div class="provider-pick ${bookingDraft.providerId==='any'?'selected':''}" data-pick-provider="any">
+        <div class="avatar" style="background:var(--brass);">${ic('shield')}</div>
+        <div class="info"><div class="name">Any available professional</div><div class="loc">We'll match you with a top-rated ${catById(s.category).name.toLowerCase()} pro</div></div>
+      </div>
+      ${provs.map(p=>`
+        <div class="provider-pick ${bookingDraft.providerId===p.id?'selected':''}" data-pick-provider="${p.id}">
+          <div class="avatar" style="background:var(--teal);">${initials(p.name)}</div>
+          <div class="info">
+            <div class="name">${esc(p.name)}</div>
+            <div class="loc">${ic('pin')} ${esc(p.area)} · ${p.rating? p.rating.toFixed(1)+' ★ ('+p.reviewCount+')' : 'New provider'}</div>
+          </div>
+          <div style="font-weight:700; font-size:13px; color:var(--brass-ink);">${esc(p.rate)}</div>
+        </div>
+      `).join('')}
+    `;
+  } else if(step===2){
+    body = `
+      <h3 style="margin-bottom:16px; font-size:17px;">Pick a date &amp; time</h3>
+      <div class="row2">
+        <div class="field"><label for="bk-date">Date</label><input class="input" type="date" id="bk-date" min="${todayISO()}" value="${bookingDraft.date}"></div>
+        <div class="field"><label for="bk-time">Time slot</label>
+          <select class="input" id="bk-time">
+            <option value="">Select a time</option>
+            ${['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'].map(t=>`<option value="${t}" ${bookingDraft.time===t?'selected':''}>${fmtTime(t)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <p class="hint">Estimated duration: ${esc(s.duration)}. Your provider will confirm the exact arrival window.</p>
+    `;
+  } else if(step===3){
+    body = `
+      <h3 style="margin-bottom:16px; font-size:17px;">Where should we come?</h3>
+      <div class="field"><label for="bk-address">Service address</label><textarea class="input" id="bk-address" placeholder="House / flat no., street, area, city">${esc(bookingDraft.address)}</textarea></div>
+      <div class="field"><label for="bk-notes">Notes for the provider (optional)</label><textarea class="input" id="bk-notes" placeholder="Anything they should know before arriving?">${esc(bookingDraft.notes)}</textarea></div>
+    `;
+  } else {
+    const provLabel = bookingDraft.providerId==='any' ? 'Any available professional' : (provById(bookingDraft.providerId)?.name || '—');
+    body = `
+      <h3 style="margin-bottom:16px; font-size:17px;">Review &amp; pay</h3>
+      <div class="card" style="padding:18px; margin-bottom:20px;">
+        <div class="summary-row"><span class="l">Service</span><span>${esc(s.name)}</span></div>
+        <div class="summary-row"><span class="l">Professional</span><span>${esc(provLabel)}</span></div>
+        <div class="summary-row"><span class="l">Date &amp; time</span><span>${bookingDraft.date?fmtDate(bookingDraft.date):'—'}, ${bookingDraft.time?fmtTime(bookingDraft.time):'—'}</span></div>
+        <div class="summary-row"><span class="l">Address</span><span style="max-width:220px; text-align:right;">${esc(bookingDraft.address)}</span></div>
+        <div class="summary-row total"><span class="l">Total due</span><span>${fmtMoney(s.price)}</span></div>
+      </div>
+      <div class="card-preview">
+        <div class="chip-ic"></div>
+        <div class="num">•••• •••• •••• 4242</div>
+        <div class="bot"><span>Card holder</span><span>Expires</span></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="pay-name">Name on card</label><input class="input" id="pay-name" placeholder="${esc(u.name)}" value="${esc(u.name)}"></div>
+        <div class="field"><label for="pay-num">Card number</label><input class="input" id="pay-num" placeholder="4242 4242 4242 4242" maxlength="19"></div>
+        <div class="field"><label for="pay-exp">Expiry</label><input class="input" id="pay-exp" placeholder="MM/YY" maxlength="5"></div>
+        <div class="field"><label for="pay-cvc">CVC</label><input class="input" id="pay-cvc" placeholder="123" maxlength="3"></div>
+      </div>
+      <div class="demo-hint">This checkout is simulated for demo purposes — no card network is contacted and no real payment gateway (e.g. Stripe/PayPal) is charged.</div>
+    `;
+  }
+
+  bindViewHandlers = ()=>{
+    document.querySelectorAll('[data-pick-provider]').forEach(el=>el.addEventListener('click', ()=>{
+      bookingDraft.providerId = el.getAttribute('data-pick-provider');
+      render();
+    }));
+    const backBtn = document.getElementById('bk-back');
+    if(backBtn) backBtn.addEventListener('click', ()=>navigate('#/book/'+serviceId+'?step='+(step-1)));
+    const nextBtn = document.getElementById('bk-next');
+    if(nextBtn) nextBtn.addEventListener('click', ()=>{
+      if(step===1){
+        if(!bookingDraft.providerId){ toast('Please choose a professional.'); return; }
+      }
+      if(step===2){
+        const d = document.getElementById('bk-date').value;
+        const t = document.getElementById('bk-time').value;
+        if(!d || !t){ toast('Please select a date and time.'); return; }
+        bookingDraft.date = d; bookingDraft.time = t;
+      }
+      if(step===3){
+        const a = document.getElementById('bk-address').value.trim();
+        if(!a){ toast('Please enter a service address.'); return; }
+        bookingDraft.address = a;
+        bookingDraft.notes = document.getElementById('bk-notes').value.trim();
+      }
+      navigate('#/book/'+serviceId+'?step='+(step+1));
+    });
+    const payBtn = document.getElementById('bk-pay');
+    if(payBtn) payBtn.addEventListener('click', ()=>{
+      const num = document.getElementById('pay-num').value.trim();
+      const exp = document.getElementById('pay-exp').value.trim();
+      const cvc = document.getElementById('pay-cvc').value.trim();
+      if(num.replace(/\s/g,'').length<12 || !exp || cvc.length<3){ toast('Please enter valid demo card details.'); return; }
+      let providerId = bookingDraft.providerId;
+      if(providerId==='any'){
+        const candidates = DB.providers.filter(p=>p.category===s.category && p.status==='active');
+        candidates.sort((a,b)=> (DB.bookings.filter(bk=>bk.providerId===a.id).length) - (DB.bookings.filter(bk=>bk.providerId===b.id).length));
+        providerId = candidates[0] ? candidates[0].id : null;
+      }
+      if(!providerId){ toast('No professionals available for this service right now.'); return; }
+      const booking = {
+        id: uid('b'), customerId:u.id, providerId, serviceId:s.id,
+        date:bookingDraft.date, time:bookingDraft.time, address:bookingDraft.address, notes:bookingDraft.notes,
+        price:s.price, status:'pending', paymentStatus:'paid', createdAt:todayISO()
+      };
+      DB.bookings.push(booking);
+      const prov = provById(providerId);
+      addNotification(prov.userId, 'New booking request', u.name+' requested '+s.name+' on '+fmtDate(booking.date)+'.');
+      addNotification(u.id, 'Booking confirmed', 'Your payment for '+s.name+' was received. Awaiting provider confirmation.');
+      persist();
+      bookingDraft = {};
+      toast('Booking placed and payment received!');
+      navigate('#/dashboard/customer?tab=bookings');
+    });
+  };
+
+  return `
+  <section class="wrap" style="max-width:640px; padding-top:40px;">
+    <a href="#/service/${serviceId}" class="btn btn-ghost btn-sm" style="padding-left:0;">← Cancel and go back</a>
+    <h2 style="margin:14px 0 24px; font-size:22px;">Book: ${esc(s.name)}</h2>
+    ${stepperHtml}
+    <div class="card" style="padding:24px;">
+      ${body}
+      <div style="display:flex; justify-content:space-between; margin-top:26px;">
+        ${step>1 ? '<button class="btn btn-outline" id="bk-back">Back</button>' : '<span></span>'}
+        ${step<4 ? '<button class="btn btn-brass" id="bk-next">Continue</button>' : '<button class="btn btn-brass" id="bk-pay">Pay '+fmtMoney(s.price)+' &amp; confirm</button>'}
+      </div>
+    </div>
+  </section>`;
+}
+
+/* ===================== VIEW: CUSTOMER DASHBOARD ===================== */
+function viewCustomerDashboard(query){
+  const u = currentUser();
+  const tab = query.tab || 'bookings';
+  const myBookings = DB.bookings.filter(b=>b.customerId===u.id).sort((a,b)=> b.createdAt.localeCompare(a.createdAt));
+
+  bindViewHandlers = ()=>{
+    document.querySelectorAll('[data-cancel-booking]').forEach(b=>b.addEventListener('click', ()=>{
+      const id = b.getAttribute('data-cancel-booking');
+      const bk = DB.bookings.find(x=>x.id===id);
+      if(!bk) return;
+      if(!confirm('Cancel this booking? This is a demo action.')) return;
+      bk.status='cancelled'; bk.paymentStatus='refunded';
+      addNotification(provById(bk.providerId).userId, 'Booking cancelled', 'The customer cancelled '+svcById(bk.serviceId).name+'.');
+      persist(); toast('Booking cancelled and refund simulated.'); render();
+    }));
+    document.querySelectorAll('[data-review-booking]').forEach(b=>b.addEventListener('click', ()=>{
+      openReviewModal(b.getAttribute('data-review-booking'));
+    }));
+    document.querySelectorAll('[data-tab]').forEach(t=>t.addEventListener('click', ()=>navigate('#/dashboard/customer?tab='+t.getAttribute('data-tab'))));
+    const editForm = document.getElementById('profile-form');
+    if(editForm) editForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      u.name = document.getElementById('pf-name').value.trim();
+      u.phone = document.getElementById('pf-phone').value.trim();
+      persist(); toast('Profile updated.'); render();
+    });
+  };
+
+  let content = '';
+  if(tab==='bookings'){
+    content = myBookings.length ? `<div class="card">${myBookings.map(b=>customerBookingRow(b)).join('')}</div>` : emptyState('empty','No bookings yet','Book your first service to see it here.');
+  } else if(tab==='profile'){
+    content = `
+      <div class="card" style="padding:24px; max-width:440px;">
+        <form id="profile-form">
+          <div class="field"><label for="pf-name">Full name</label><input class="input" id="pf-name" value="${esc(u.name)}"></div>
+          <div class="field"><label for="pf-email">Email</label><input class="input" id="pf-email" value="${esc(u.email)}" disabled></div>
+          <div class="field"><label for="pf-phone">Phone</label><input class="input" id="pf-phone" value="${esc(u.phone||'')}"></div>
+          <button class="btn btn-navy" type="submit">Save changes</button>
+        </form>
+      </div>`;
+  }
+
+  return dashboardShell(u, 'customer', tab, `
+    <div class="stat-grid">
+      ${statCard(myBookings.length, 'Total bookings')}
+      ${statCard(myBookings.filter(b=>['pending','confirmed','in_progress'].includes(b.status)).length, 'Upcoming')}
+      ${statCard(myBookings.filter(b=>b.status==='completed').length, 'Completed')}
+      ${statCard(fmtMoney(myBookings.filter(b=>b.paymentStatus==='paid').reduce((a,b)=>a+b.price,0)), 'Total spent')}
+    </div>
+    <div class="tabs-row">
+      <button class="tab-btn ${tab==='bookings'?'active':''}" data-tab="bookings">My bookings</button>
+      <button class="tab-btn ${tab==='profile'?'active':''}" data-tab="profile">Profile</button>
+    </div>
+    ${content}
+  `);
+}
+
+function customerBookingRow(b){
+  const s = svcById(b.serviceId); const p = provById(b.providerId);
+  const hasReview = DB.reviews.some(r=>r.bookingId===b.id);
+  return `
+  <div class="booking-row">
+    <div class="main">
+      <h4>${esc(s.name)}</h4>
+      <div class="meta-line">
+        <span>${ic('calendar')} ${fmtDate(b.date)}, ${fmtTime(b.time)}</span>
+        <span>${ic('user')} ${esc(p.name)}</span>
+        <span>${ic('wallet')} ${fmtMoney(b.price)}</span>
+      </div>
+      <div style="margin-top:8px;"><span class="badge badge-${b.status}">${statusLabel(b.status)}</span></div>
+    </div>
+    <div class="actions">
+      ${['pending','confirmed'].includes(b.status) ? '<button class="btn btn-danger btn-sm" data-cancel-booking="'+b.id+'">Cancel</button>' : ''}
+      ${b.status==='completed' && !hasReview ? '<button class="btn btn-outline btn-sm" data-review-booking="'+b.id+'">Leave a review</button>' : ''}
+      ${b.status==='completed' && hasReview ? '<span class="hint" style="align-self:center; color:var(--muted); font-size:12.5px;">Review submitted</span>' : ''}
+    </div>
+  </div>`;
+}
+
+function statCard(n, l){ return `<div class="card stat-card"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+
+function dashboardShell(u, role, activeTab, content){
+  const nav = role==='customer' ? [['bookings','My bookings'],['profile','Profile']] : [];
+  return `
+  <section class="wrap" style="padding-top:36px;">
+    <h2 style="font-size:22px; margin-bottom:22px;">Hi, ${esc(u.name.split(' ')[0])} 👋</h2>
+    <div class="dash-shell">
+      <div class="dash-nav">
+        ${nav.map(([k,l])=>`<a href="#/dashboard/${role}?tab=${k}" class="${activeTab===k?'active':''}">${esc(l)}</a>`).join('')}
+      </div>
+      <div>${content}</div>
+    </div>
+  </section>`;
+}
+
+let reviewTargetBookingId = null, reviewRating = 5;
+function openReviewModal(bookingId){
+  reviewTargetBookingId = bookingId; reviewRating = 5;
+  renderReviewModal();
+}
+function renderReviewModal(){
+  let el = document.getElementById('review-modal-root');
+  if(!el){ el = document.createElement('div'); el.id='review-modal-root'; document.body.appendChild(el); }
+  const b = DB.bookings.find(x=>x.id===reviewTargetBookingId);
+  const s = svcById(b.serviceId); const p = provById(b.providerId);
+  el.innerHTML = `
+    <div class="modal-backdrop" id="review-backdrop">
+      <div class="modal-box">
+        <h3 style="font-size:17px; margin-bottom:4px;">Rate ${esc(p.name)}</h3>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">${esc(s.name)} · ${fmtDate(b.date)}</p>
+        <div style="display:flex; gap:6px; margin-bottom:16px;" id="star-picker">
+          ${[1,2,3,4,5].map(i=>`<button type="button" data-star="${i}" style="background:none;border:none;padding:2px;color:${i<=reviewRating?'var(--brass)':'var(--border)'};">${ic('star','')}</button>`).join('')}
+        </div>
+        <div class="field"><textarea class="input" id="review-comment" placeholder="How did it go?"></textarea></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn btn-ghost" id="review-cancel">Cancel</button>
+          <button class="btn btn-brass" id="review-submit">Submit review</button>
+        </div>
+      </div>
+    </div>`;
+  document.querySelectorAll('#star-picker [data-star]').forEach(btn=>btn.addEventListener('click', ()=>{
+    reviewRating = parseInt(btn.getAttribute('data-star'),10); renderReviewModal();
+  }));
+  document.getElementById('review-cancel').addEventListener('click', ()=>{ el.innerHTML=''; });
+  document.getElementById('review-backdrop').addEventListener('click', e=>{ if(e.target.id==='review-backdrop') el.innerHTML=''; });
+  document.getElementById('review-submit').addEventListener('click', ()=>{
+    const comment = document.getElementById('review-comment').value.trim() || 'No comment provided.';
+    DB.reviews.push({id:uid('r'), bookingId:b.id, providerId:p.id, customerId:b.customerId, rating:reviewRating, comment, date:todayISO()});
+    recomputeProviderRating(p, DB.reviews);
+    addNotification(p.userId, 'New review received', userById(b.customerId).name+' left you a '+reviewRating+'-star review.');
+    persist();
+    el.innerHTML='';
+    toast('Thanks for your review!');
+    render();
+  });
+}
+
+/* ===================== VIEW: PROVIDER DASHBOARD ===================== */
+function viewProviderDashboard(query){
+  const u = currentUser();
+  const p = currentProvider();
+  const tab = query.tab || 'bookings';
+  const myBookings = DB.bookings.filter(b=>b.providerId===p.id).sort((a,b)=> a.date.localeCompare(b.date));
+  const completed = myBookings.filter(b=>b.status==='completed');
+  const earnings = completed.reduce((a,b)=>a+b.price,0);
+  const fee = Math.round(earnings*0.15);
+
+  bindViewHandlers = ()=>{
+    document.querySelectorAll('[data-tab]').forEach(t=>t.addEventListener('click', ()=>navigate('#/dashboard/provider?tab='+t.getAttribute('data-tab'))));
+    document.querySelectorAll('[data-status-update]').forEach(b=>b.addEventListener('click', ()=>{
+      const [id,newStatus] = b.getAttribute('data-status-update').split('|');
+      const bk = DB.bookings.find(x=>x.id===id);
+      bk.status = newStatus;
+      const cust = userById(bk.customerId);
+      const s = svcById(bk.serviceId);
+      const msgMap = {confirmed:'Your booking for '+s.name+' has been confirmed.', in_progress:p.name+' has started your '+s.name+'.', completed:'Your '+s.name+' has been marked complete.', cancelled:p.name+' had to cancel your '+s.name+' booking.'};
+      addNotification(cust.id, 'Booking update', msgMap[newStatus] || 'Your booking status changed.');
+      if(newStatus==='cancelled') bk.paymentStatus='refunded';
+      persist(); toast('Booking updated.'); render();
+    }));
+    const bioForm = document.getElementById('provider-profile-form');
+    if(bioForm) bioForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      p.bio = document.getElementById('pp-bio').value.trim();
+      p.area = document.getElementById('pp-area').value.trim();
+      p.rate = document.getElementById('pp-rate').value.trim();
+      persist(); toast('Profile updated.'); render();
+    });
+  };
+
+  let content = '';
+  if(tab==='bookings'){
+    content = myBookings.length ? `<div class="card">${myBookings.map(b=>providerBookingRow(b)).join('')}</div>` : emptyState('empty','No bookings yet','New booking requests will show up here.');
+  } else if(tab==='schedule'){
+    const upcoming = myBookings.filter(b=>['pending','confirmed','in_progress'].includes(b.status));
+    content = upcoming.length ? `<div class="card">${upcoming.map(b=>providerBookingRow(b,true)).join('')}</div>` : emptyState('calendar','Nothing scheduled','Your upcoming jobs will appear here.');
+  } else if(tab==='earnings'){
+    content = `
+      <div class="stat-grid">
+        ${statCard(fmtMoney(earnings), 'Gross earnings (completed)')}
+        ${statCard(fmtMoney(fee), 'Platform fee (15%)')}
+        ${statCard(fmtMoney(earnings-fee), 'Net payout')}
+        ${statCard(completed.length, 'Jobs completed')}
+      </div>
+      <div class="card overflow-x">
+        <table class="data">
+          <thead><tr><th>Date</th><th>Service</th><th>Customer</th><th>Amount</th><th>Payout</th></tr></thead>
+          <tbody>
+            ${completed.length ? completed.map(b=>`<tr><td>${fmtDate(b.date)}</td><td>${esc(svcById(b.serviceId).name)}</td><td>${esc(userById(b.customerId).name)}</td><td>${fmtMoney(b.price)}</td><td>${fmtMoney(Math.round(b.price*0.85))}</td></tr>`).join('') : '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:24px;">No completed jobs yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      <div class="demo-hint" style="margin-top:14px;">Payouts are simulated for this demo. A production build would transfer net earnings via Stripe Connect on a rolling schedule.</div>
+    `;
+  } else if(tab==='profile'){
+    content = `
+      <div class="card" style="padding:24px; max-width:480px;">
+        <form id="provider-profile-form">
+          <div class="field"><label>Category</label><input class="input" value="${esc(catById(p.category).name)}" disabled></div>
+          <div class="field"><label for="pp-area">Service area</label><input class="input" id="pp-area" value="${esc(p.area)}"></div>
+          <div class="field"><label for="pp-rate">Rate</label><input class="input" id="pp-rate" value="${esc(p.rate)}"></div>
+          <div class="field"><label for="pp-bio">Bio</label><textarea class="input" id="pp-bio">${esc(p.bio)}</textarea></div>
+          <button class="btn btn-navy" type="submit">Save changes</button>
+        </form>
+      </div>`;
+  }
+
+  return dashboardShellProvider(u, p, tab, `
+    <div class="stat-grid">
+      ${statCard(myBookings.filter(b=>b.status==='pending').length, 'Awaiting response')}
+      ${statCard(myBookings.filter(b=>['confirmed','in_progress'].includes(b.status)).length, 'Upcoming / active')}
+      ${statCard(completed.length, 'Completed jobs')}
+      ${statCard(p.rating? p.rating.toFixed(1):'—', 'Average rating')}
+    </div>
+    <div class="tabs-row">
+      <button class="tab-btn ${tab==='bookings'?'active':''}" data-tab="bookings">All bookings</button>
+      <button class="tab-btn ${tab==='schedule'?'active':''}" data-tab="schedule">Schedule</button>
+      <button class="tab-btn ${tab==='earnings'?'active':''}" data-tab="earnings">Earnings</button>
+      <button class="tab-btn ${tab==='profile'?'active':''}" data-tab="profile">Profile</button>
+    </div>
+    ${content}
+  `);
+}
+
+function dashboardShellProvider(u,p,activeTab,content){
+  const nav = [['bookings','All bookings'],['schedule','Schedule'],['earnings','Earnings'],['profile','Profile']];
+  return `
+  <section class="wrap" style="padding-top:36px;">
+    <h2 style="font-size:22px; margin-bottom:22px;">Hi, ${esc(u.name.split(' ')[0])} 👋</h2>
+    <div class="dash-shell">
+      <div class="dash-nav">
+        ${nav.map(([k,l])=>`<a href="#/dashboard/provider?tab=${k}" class="${activeTab===k?'active':''}">${esc(l)}</a>`).join('')}
+      </div>
+      <div>${content}</div>
+    </div>
+  </section>`;
+}
+
+function providerBookingRow(b, compact){
+  const s = svcById(b.serviceId); const cust = userById(b.customerId);
+  let actions = '';
+  if(b.status==='pending') actions = `<button class="btn btn-brass btn-sm" data-status-update="${b.id}|confirmed">Accept</button><button class="btn btn-danger btn-sm" data-status-update="${b.id}|cancelled">Decline</button>`;
+  else if(b.status==='confirmed') actions = `<button class="btn btn-navy btn-sm" data-status-update="${b.id}|in_progress">Start job</button><button class="btn btn-danger btn-sm" data-status-update="${b.id}|cancelled">Cancel</button>`;
+  else if(b.status==='in_progress') actions = `<button class="btn btn-brass btn-sm" data-status-update="${b.id}|completed">Mark completed</button>`;
+  return `
+  <div class="booking-row">
+    <div class="main">
+      <h4>${esc(s.name)}</h4>
+      <div class="meta-line">
+        <span>${ic('calendar')} ${fmtDate(b.date)}, ${fmtTime(b.time)}</span>
+        <span>${ic('user')} ${esc(cust.name)}</span>
+        <span>${ic('pin')} ${esc(b.address)}</span>
+      </div>
+      <div style="margin-top:8px;"><span class="badge badge-${b.status}">${statusLabel(b.status)}</span></div>
+    </div>
+    ${!compact ? `<div class="actions">${actions}</div>` : ''}
+  </div>`;
+}
+
+/* ===================== VIEW: ADMIN ===================== */
+function viewAdmin(query){
+  const tab = query.tab || 'overview';
+  bindViewHandlers = ()=>{
+    document.querySelectorAll('[data-tab]').forEach(t=>t.addEventListener('click', ()=>navigate('#/admin?tab='+t.getAttribute('data-tab'))));
+    document.querySelectorAll('[data-toggle-user]').forEach(b=>b.addEventListener('click', ()=>{
+      const id = b.getAttribute('data-toggle-user');
+      const usr = userById(id);
+      usr.status = usr.status==='active' ? 'suspended' : 'active';
+      persist(); toast(usr.name+' is now '+usr.status+'.'); render();
+    }));
+    document.querySelectorAll('[data-delete-service]').forEach(b=>b.addEventListener('click', ()=>{
+      const id = b.getAttribute('data-delete-service');
+      if(!confirm('Remove this service listing?')) return;
+      DB.services = DB.services.filter(s=>s.id!==id);
+      persist(); toast('Service removed.'); render();
+    }));
+    const addForm = document.getElementById('add-service-form');
+    if(addForm) addForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = document.getElementById('as-name').value.trim();
+      const cat = document.getElementById('as-cat').value;
+      const price = parseInt(document.getElementById('as-price').value,10) || 0;
+      const duration = document.getElementById('as-duration').value.trim() || '1 hr';
+      const desc = document.getElementById('as-desc').value.trim() || 'New service.';
+      if(!name){ toast('Please enter a service name.'); return; }
+      DB.services.push({id:uid('s'), category:cat, name, desc, price, unit:'starting at', duration});
+      persist(); toast('Service added.'); addForm.reset(); render();
+    });
+  };
+
+  const totalRevenue = DB.bookings.filter(b=>b.paymentStatus==='paid'||b.status==='completed').reduce((a,b)=> a + (b.status!=='cancelled'? b.price:0), 0);
+  const platformFees = DB.bookings.filter(b=>b.status==='completed').reduce((a,b)=>a+Math.round(b.price*0.15),0);
+
+  let content = '';
+  if(tab==='overview'){
+    content = `
+      <div class="stat-grid">
+        ${statCard(DB.users.filter(u=>u.role==='customer').length, 'Customers')}
+        ${statCard(DB.providers.length, 'Providers')}
+        ${statCard(DB.bookings.length, 'Total bookings')}
+        ${statCard(fmtMoney(platformFees), 'Platform revenue (fees)')}
+      </div>
+      <div class="card overflow-x">
+        <table class="data">
+          <thead><tr><th>Booking</th><th>Customer</th><th>Provider</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            ${DB.bookings.slice().sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,8).map(b=>`
+              <tr>
+                <td>${esc(svcById(b.serviceId).name)}</td>
+                <td>${esc(userById(b.customerId).name)}</td>
+                <td>${esc(provById(b.providerId).name)}</td>
+                <td>${fmtDate(b.date)}</td>
+                <td>${fmtMoney(b.price)}</td>
+                <td><span class="badge badge-${b.status}">${statusLabel(b.status)}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } else if(tab==='users'){
+    content = `
+      <div class="card overflow-x">
+        <table class="data">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            ${DB.users.map(u=>`
+              <tr>
+                <td>${esc(u.name)}</td><td>${esc(u.email)}</td>
+                <td style="text-transform:capitalize;">${esc(u.role)}</td>
+                <td><span class="badge ${u.status==='active'?'badge-confirmed':'badge-cancelled'}">${esc(u.status)}</span></td>
+                <td>${u.role!=='admin' ? '<button class="btn btn-outline btn-sm" data-toggle-user="'+u.id+'">'+(u.status==='active'?'Suspend':'Reactivate')+'</button>' : ''}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } else if(tab==='services'){
+    content = `
+      <div class="card" style="padding:20px; margin-bottom:22px;">
+        <h3 style="font-size:15px; margin-bottom:14px;">Add a new service</h3>
+        <form id="add-service-form">
+          <div class="row2">
+            <div class="field"><label for="as-name">Service name</label><input class="input" id="as-name" required></div>
+            <div class="field"><label for="as-cat">Category</label><select class="input" id="as-cat">${DB.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div>
+            <div class="field"><label for="as-price">Price (₹)</label><input class="input" id="as-price" type="number" min="0" required></div>
+            <div class="field"><label for="as-duration">Duration</label><input class="input" id="as-duration" placeholder="e.g. 1 hr"></div>
+          </div>
+          <div class="field"><label for="as-desc">Description</label><textarea class="input" id="as-desc"></textarea></div>
+          <button class="btn btn-brass" type="submit">${ic('plus')} Add service</button>
+        </form>
+      </div>
+      <div class="card overflow-x">
+        <table class="data">
+          <thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Duration</th><th></th></tr></thead>
+          <tbody>
+            ${DB.services.map(s=>`
+              <tr>
+                <td>${esc(s.name)}</td><td>${esc(catById(s.category).name)}</td><td>${fmtMoney(s.price)}</td><td>${esc(s.duration)}</td>
+                <td><button class="btn btn-danger btn-sm" data-delete-service="${s.id}">${ic('trash')} Remove</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } else if(tab==='transactions'){
+    content = `
+      <div class="stat-grid">
+        ${statCard(fmtMoney(totalRevenue), 'Gross transaction value')}
+        ${statCard(fmtMoney(platformFees), 'Platform fees earned')}
+        ${statCard(DB.bookings.filter(b=>b.paymentStatus==='refunded').length, 'Refunds issued')}
+        ${statCard(DB.bookings.filter(b=>b.status==='completed').length, 'Completed jobs')}
+      </div>
+      <div class="card overflow-x">
+        <table class="data">
+          <thead><tr><th>Booking</th><th>Customer</th><th>Provider</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead>
+          <tbody>
+            ${DB.bookings.slice().sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).map(b=>`
+              <tr>
+                <td>${esc(svcById(b.serviceId).name)}</td>
+                <td>${esc(userById(b.customerId).name)}</td>
+                <td>${esc(provById(b.providerId).name)}</td>
+                <td>${fmtMoney(b.price)}</td>
+                <td style="text-transform:capitalize;">${esc(b.paymentStatus)}</td>
+                <td><span class="badge badge-${b.status}">${statusLabel(b.status)}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  const nav = [['overview','Overview'],['users','Users'],['services','Services'],['transactions','Transactions']];
+  return `
+  <section class="wrap" style="padding-top:36px;">
+    <h2 style="font-size:22px; margin-bottom:22px;">Admin panel</h2>
+    <div class="dash-shell">
+      <div class="dash-nav">${nav.map(([k,l])=>`<a href="#/admin?tab=${k}" class="${tab===k?'active':''}">${esc(l)}</a>`).join('')}</div>
+      <div>${content}</div>
+    </div>
+  </section>`;
+}
+
+/* ===================== 404 ===================== */
+function viewNotFound(){
+  bindViewHandlers = ()=>{};
+  return `<div class="center-py wrap">${emptyState('empty','Page not found','The page you are looking for does not exist.')}<a href="#/" class="btn btn-brass" style="margin-top:10px;">Go home</a></div>`;
+}
+
+})();
+</script>
+</body>
+</html>
